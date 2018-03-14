@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Create from '@/components/game/Create'
 import Play from '@/components/game/Play'
+import Evaluation from '@/components/game/Evaluation'
 import Score from '@/components/game/Score'
 
 Vue.use(Router)
@@ -21,6 +22,11 @@ const router = new Router({
             path: '/play_game',
             component: Play,
             name: 'play_game'
+        },
+        {
+            path: '/eval',
+            component: Evaluation,
+            name: 'game_evaluation'
         },
         {
             path: '/score',
