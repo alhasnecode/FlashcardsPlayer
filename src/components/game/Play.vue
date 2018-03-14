@@ -4,8 +4,12 @@
       <v-layout row wrap class="header">
         <v-flex xs12>
           <h1 class="display-4 big-title">Apprentissage</h1>
-          <p class="display-1">Temps restant avant le test: <span>{{learning_countdown.hours}}</span>:<span>{{learning_countdown.minutes}}</span>:<span>{{learning_countdown.seconds}}</span></p>
-          <v-btn color="success" v-bind:disabled="!allow_start">Démarrer l'évaluation</v-btn>
+          <p v-if="learning_countdown.max_learning_time_required" class="display-1">Temps restant avant le test: 
+            <span>{{learning_countdown.hours}}</span>:
+            <span>{{learning_countdown.minutes}}</span>:
+            <span>{{learning_countdown.seconds}}</span>
+          </p>
+          <v-btn color="success" @click="startEval()" v-bind:disabled="!allow_start">Démarrer l'évaluation</v-btn>
         </v-flex>
       </v-layout>
       <v-layout row wrap>
@@ -59,6 +63,8 @@ export default {
         seconds: '00',
         minutes: '00',
         hours: '00',
+        min_learning_time_required: false,
+        max_learning_time_required: false,
         max_learning_time: 0,
         min_learning_time: 0
       },
@@ -80,39 +86,65 @@ export default {
 
   created() {
 
-    this.max_learning_time = new Date().getTime() + (this.game.collection.max_learning_time * 1000)
-    this.min_learning_time = new Date().getTime() + (this.game.collection.min_learning_time * 1000)
+    this.learning_countdown.max_learning_time_required = this.game.collection.max_learning_time_required
+    this.learning_countdown.min_learning_time_required = this.game.collection.min_learning_time_required
+
+
+    if(this.learning_countdown.max_learning_time_required){
+      this.max_learning_time = new Date().getTime() + (this.game.collection.max_learning_time * 1000)
+    }
+
+    if(this.learning_countdown.min_learning_time_required){
+      this.min_learning_time = new Date().getTime() + (this.game.collection.min_learning_time * 1000)
+    }else{
+      this.allow_start = true
+    }
+      
 
     this.interval = setInterval(() => {
 
-      let max_distance = this.max_learning_time - new Date().getTime()
-      let min_distance = this.min_learning_time - new Date().getTime()
+      
 
-      if(min_distance < 0) {
-        this.allow_start = true
+      if(this.learning_countdown.min_learning_time_required){
+
+        let min_distance = this.min_learning_time - new Date().getTime()
+
+        if(min_distance < 0) {
+          this.allow_start = true
+          if(!this.learning_countdown.max_learning_time_required){
+            clearInterval(this.interval)
+          }
+        }
+
       }
 
-      if(max_distance > 0) {
+      if(this.learning_countdown.max_learning_time_required){
 
-        this.learning_countdown.hours = Math.floor(max_distance / (1000 * 60 * 60))
-        if(this.learning_countdown.hours < 10){
-          this.learning_countdown.hours = '0'+this.learning_countdown.hours
+        let max_distance = this.max_learning_time - new Date().getTime()
+
+        if(max_distance > 0) {
+
+          this.learning_countdown.hours = Math.floor(max_distance / (1000 * 60 * 60))
+          if(this.learning_countdown.hours < 10){
+            this.learning_countdown.hours = '0'+this.learning_countdown.hours
+          }
+
+          this.learning_countdown.minutes = Math.floor(max_distance % (1000 * 60 * 60) / (1000 * 60))
+          if(this.learning_countdown.minutes < 10){
+            this.learning_countdown.minutes = '0'+this.learning_countdown.minutes
+          }
+
+          this.learning_countdown.seconds = Math.floor(max_distance % (1000 * 60) / 1000)
+          if(this.learning_countdown.seconds < 10){
+            this.learning_countdown.seconds = '0'+this.learning_countdown.seconds
+          }
+
+        }else{
+
+          clearInterval(this.interval)
+          this.$router.push({name: 'game_evaluation'})
+
         }
-
-        this.learning_countdown.minutes = Math.floor(max_distance % (1000 * 60 * 60) / (1000 * 60))
-        if(this.learning_countdown.minutes < 10){
-          this.learning_countdown.minutes = '0'+this.learning_countdown.minutes
-        }
-
-        this.learning_countdown.seconds = Math.floor(max_distance % (1000 * 60) / 1000)
-        if(this.learning_countdown.seconds < 10){
-          this.learning_countdown.seconds = '0'+this.learning_countdown.seconds
-        }
-
-      }else{
-
-        clearInterval(this.interval)
-
       }
     }, 1000)
   },
@@ -125,6 +157,12 @@ export default {
           this.selected_id = carte.id
         }else{
           this.fliped = !this.fliped
+        }
+      },
+
+      startEval() {
+        if(this.allow_start) {
+          this.$router.push({name: 'game_evaluation'})
         }
       }
 
