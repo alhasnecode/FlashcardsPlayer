@@ -28,19 +28,19 @@
         <v-dialog v-model="modal" max-width="500px">
             <v-card>
                 <v-card-title>
-                    <h2 v-if="game.collection != null">{{game.collection.libelle}}</h2><br>
+                    <h3 v-if="game.collection != null">Apprentisage de la collection : {{game.collection.libelle}}</h3><br>
                 </v-card-title>
                 <v-card-title v-show="alertCreation">
                     <v-alert color="error" icon="warning" value="true" dismissible v-model="alertCreation">
-                        Replissez tout les champs !!
+                        Vous devez saisir un pseudo avant de commencer l'apprentisage
                     </v-alert>
                 </v-card-title>
                 <v-card-text>
                     <form>
-                        <v-text-field label="Pseudo" v-model="game.pseudo" required></v-text-field>
+                        <v-text-field label="Saisir ici votre pseudo avant de commencer" v-model="game.pseudo" required></v-text-field>
                         <!--<v-select :items="choix" label="Nombre de photos" item-value="text" v-model="nbImages" required></v-select>-->
-                        <v-btn @click="createGame">Submit</v-btn>
-                        <v-btn @click="clear">Clear</v-btn>
+                        <v-btn @click="createGame">Commencer</v-btn>
+                        <v-btn @click="clear">Annuler</v-btn>
                     </form>
                 </v-card-text>
             </v-card>
