@@ -96,17 +96,17 @@ export default new Vuex.Store({
             })
         },
 
-        sendScore({commit, state}, global_score) {
-            if(state.partie != null){
-                return api.patch('games/'+state.partie.id+'/score', {score: global_score.final_score}).then(res => {
-                    commit('setScore', global_score)
-                    commit('setFinished', true)
+        sendScore({commit}, game, game_id) {
+            // if(game != null){
+                return api.patch(`games/${game_id}/score`, {game: game}).then(res => {
                     return Promise.resolve('Bien enregistré')
                 }).catch(e => {
                     return Promise.reject(e)
                 })
-            }
+            // }
             return Promise.reject('Aucune partie en cours')
         }
+
+
     }
 })

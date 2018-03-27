@@ -4,7 +4,7 @@
       <v-layout row wrap class="header">
         <v-flex xs12>
           <h1 class="display-4 big-title">Apprentissage</h1>
-          <p v-if="learning_countdown.max_learning_time_required" class="display-1">Temps restant avant le test: 
+          <p v-if="learning_countdown.max_learning_time_required" class="display-1">Temps restant avant le test:
             <span>{{learning_countdown.hours}}</span>:
             <span>{{learning_countdown.minutes}}</span>:
             <span>{{learning_countdown.seconds}}</span>
@@ -17,11 +17,7 @@
           <v-layout>
             <v-flex xs12>
               <v-card>
-                <!--<v-card-title primary-title>
-                  <div>
-                    <h3 class="headline mb-0">{{collection.libelle}}</h3>
-                  </div>
-                </v-card-title>-->
+                
                 <v-card-media height="300px">
                     <div class="flipper" v-bind:class="{'flip': selected_id == carte.id && fliped}">
                       <div class="front">
@@ -99,11 +95,11 @@ export default {
     }else{
       this.allow_start = true
     }
-      
+
 
     this.interval = setInterval(() => {
 
-      
+
 
       if(this.learning_countdown.min_learning_time_required){
 
