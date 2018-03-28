@@ -3,13 +3,13 @@
     <v-container grid-list-md text-xs-center v-if="game != undefined">
       <v-layout row wrap class="header">
         <v-flex xs12>
-          <h1 class="display-4 big-title">Apprentissage</h1>
+          <h1 class="display-1 left">Apprentissage</h1>
           <p v-if="learning_countdown.max_learning_time_required" class="display-1">Temps restant avant le test:
             <span>{{learning_countdown.hours}}</span>:
             <span>{{learning_countdown.minutes}}</span>:
             <span>{{learning_countdown.seconds}}</span>
           </p>
-          <v-btn color="success" @click="startEval()" v-bind:disabled="!allow_start">Démarrer l'évaluation</v-btn>
+          <v-btn class="right" color="success" @click="startEval()" v-bind:disabled="!allow_start">Démarrer l'évaluation</v-btn>
         </v-flex>
       </v-layout>
       <v-layout row wrap>
@@ -17,7 +17,7 @@
           <v-layout>
             <v-flex xs12>
               <v-card>
-                
+
                 <v-card-media height="300px">
                     <div class="flipper" v-bind:class="{'flip': selected_id == carte.id && fliped}">
                       <div class="front">
