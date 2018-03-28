@@ -18,7 +18,7 @@
             <v-flex xs12>
               <v-card>
 
-                <v-card-media height="300px">
+                <v-card-media height="300px" @click.stop="flipCard(carte)" id="collection">
                     <div class="flipper" v-bind:class="{'flip': selected_id == carte.id && fliped}">
                       <div class="front">
                         <img class="front" :src="carte.url_image">
@@ -28,10 +28,6 @@
                       </div>
                     </div>
                 </v-card-media>
-
-                <v-card-actions>
-                  <v-btn flat large color="secondary" @click.stop="flipCard(carte)" id="collection">Tourner</v-btn>
-                </v-card-actions>
 
               </v-card>
             </v-flex>
