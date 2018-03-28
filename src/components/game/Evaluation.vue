@@ -200,10 +200,15 @@ export default {
 
     //Méthod pour selectioner les possible reponse à l'hasard et le desordener
     reponse_posibles(){
+
+      let temp_cards = this.game.collection.cartes;
+
       for (var i = 1; i < this.game.collection.nb_possible_answers; i++) {
-        this.random=this.getRandomInt(this.game.collection.cartes.length)
-        this.reponses_p.push(this.game.collection.cartes[this.random].description)
+        this.random = this.getRandomInt(temp_cards.length)
+        this.reponses_p.push(temp_cards[this.random].description)
+        temp_cards.splice(this.random, 1)
       }
+
       this.reponses_p.push(this.game.collection.cartes[this.index].description)
       this.reponses_p = this.reponses_p.sort(function() {return Math.random() - 0.5});
       console.log(this.reponses_p);
