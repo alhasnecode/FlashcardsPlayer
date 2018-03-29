@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "axios": "^0.17.1",
+    "font-awesome": "^4.7.0",
     "local-storage": "^1.4.2",
     "vue": "^2.5.2",
+    "vue-material-design-icons": "^1.2.1",
     "vue-router": "^3.0.1",
     "vue2-leaflet": "0.0.58",
     "vuetify": "^0.17.7",

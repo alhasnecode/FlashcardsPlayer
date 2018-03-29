@@ -35,6 +35,10 @@ export default new Vuex.Store({
 
         setCollections(state, arr) {
             state.collections = arr
+        },
+
+        setResponses(state, responses_array) {
+            state.game.responses = responses_array
         }
     },
     getters: {
@@ -96,15 +100,26 @@ export default new Vuex.Store({
             })
         },
 
-        sendScore({commit}, game, game_id) {
-            // if(game != null){
-                return api.patch(`games/${game_id}/score`, {game: game}).then(res => {
+        sendScore({commit, state}, responses) {
+            if(state.game != null){
+
+                return api.patch(`games/${state.game.id}/score`, {game: state.game}).then(res => {
+                    console.log(res)
                     return Promise.resolve('Bien enregistré')
                 }).catch(e => {
                     return Promise.reject(e)
                 })
-            // }
-            return Promise.reject('Aucune partie en cours')
+
+            }else if(state.game.is_finished == true) {
+
+                return Promise.reject('Cette partie est déjà terminée')
+
+            }else{
+
+                return Promise.reject('Aucune partie en cours')
+
+            }
+            
         }
 
 

@@ -1,16 +1,16 @@
 <template>
   <v-container grid-list-md text-xs-center>
-    <h1>Vous avez fini votre partie : avec {{score.final_score}} points !</h1></br>
+    <!--<h1>Vous avez fini votre partie : avec {{score.final_score}} points !</h1></br>
 
     <v-expansion-panel focusable>
     <v-expansion-panel-content>
 
       <div slot="header"><h2>Détails du score</h2></div>
       <v-card>
-        <v-card-text class="grey lighten-3">
+        <v-card-text class="grey lighten-3">-->
 
         <!-- Tableau des scores du joueur -->
-        <v-layout row wrap>
+        <!--<v-layout row wrap>
           <v-flex xs12 xl6 offset-xl3>
             <table class="table is-striped">
               <thead>
@@ -74,61 +74,35 @@
 
     </v-expansion-panel-content>
   </v-expansion-panel>
-    <router-link to="/" flat color="dark grey"  class="btn">Nouvelle partie</router-link>
+    <router-link to="/" flat color="dark grey"  class="btn">Nouvelle partie</router-link>-->
 
-
-
+    <v-layout>
+      <v-flex xs4 offset-xs4>
+        <h3 class="headline">Tableau des scores</h3>
+      </v-flex>
+    </v-layout>
 
   </v-container>
 
 </template>
 
 <script>
+
 import{mapGetters} from 'vuex'
+
 export default {
-  name: 'FinPartie',
+  name: 'Score',
   data () {
     return {
-      scores: [],
-      scoresDetails: [],
-      fab: false,
-      hidden: false,
-      tabs: 'edit'
+      
     }
   },
   methods: {
 
   },
   created(){
-    this.$store.dispatch('allParties')
-      .then((res) => {
-        
-        res.data.forEach(partieData => {
-          if(partieData.nb_photos = this.partie.nb_photos){
-            this.scoresDetails.push(partieData)
-          }
-        })
-        
-        this.scoresDetails.sort(function(a, b) {
-          return b.score - a.score
-        })
-      })
-      .catch ((error) => {
-        console.log(error)
-      })    
+       
   },
-  computed: {
-      activeFab () {
-        switch (this.tabs) {
-          case 'one': return { 'color': 'indigo', icon: 'share' }
-          case 'two': return { 'color': 'red', icon: 'edit' }
-          case 'three': return { 'color': 'green', icon: 'zaezaezaezeazea', text:'erzerzerz' }
-          default: return {}
-        }
-      },
-    
-    ...mapGetters({score: 'getScore', partie: 'getPartie'})
-  }
 }
 </script>
 

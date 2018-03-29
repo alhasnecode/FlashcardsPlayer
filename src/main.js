@@ -7,6 +7,7 @@ import store from '@/store'
 import axios from 'axios'
 import Vuetify from 'vuetify'
 import ('../node_modules/vuetify/dist/vuetify.min.css')	
+import 'font-awesome/css/font-awesome.css'
 import colors from 'vuetify/es5/util/colors'
 
 Vue.use(Vuetify)

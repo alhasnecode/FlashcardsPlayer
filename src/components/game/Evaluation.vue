@@ -1,47 +1,75 @@
 <template>
   <v-container grid-list-xl text-xs-center>
-    <v-alert  type="error" :value="alert" transition="scale-transition">This is a success alert.</v-alert>
     <!-- ***********modal******** -->
-    <v-layout row justify-center>
-      <v-dialog v-model="dialog" max-width="290">
-        <v-card>
-          <v-card-title class="headline">{{message}}</v-card-title>
-          <v-card-text>{{score}}</v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="green darken-1" flat="flat" @click.native="dialog = false">D'accord</v-btn>
-          </v-card-actions>
-       </v-card>
-      </v-dialog>
-    </v-layout>
-    <v-layout row wrap>
-      <v-flex xs12>
-        <div class="score">
-          <p>Temps : {{max_temps}}</p>
-          <p>Score : {{score}}</p>
-        </div>
-      </v-flex>
-      <!-- <v-progress-circular indeterminate :size="50" color="primary"></v-progress-circular> -->
-        <v-flex xs6>
+    <v-layout v-if="!game_finished" row wrap>
+        <v-flex xs4>
           <v-card>
             <v-card-media height="310px">
               <div class="flipper" v-bind:class="{'flip': selected_id == question.id && fliped}" :key="question.id">
-                <div class="front">
+                <div v-if="game.collection.evaluation_type == 1" class="front">
                   <img class="front image" :src="question.url_image">
                 </div>
-                <div class="back">
+                <div v-else class="front" style="height: 98%">
                   <p class="response-text title">{{question.description}}</p>
+                </div>
+
+                <div v-if="game.collection.evaluation_type == 1" class="back">
+                  <p class="response-text title">{{question.description}}</p>
+                </div>
+                <div v-else class="back">
+                  <img class="front image" :src="question.url_image">
                 </div>
               </div>
             </v-card-media>
+
+            <v-card-title secondary-title class="title-overriden">
+              <div>
+                <h4 v-if="game.collection.evaluation_type == 1" class="headline mb-0">Clique sur le texte qui correspond à l'image</h4>
+                <h4 v-else class="headline mb-0">Clique sur l'image qui correspond au texte</h4>
+              </div>
+            </v-card-title>
+
           </v-card>
         </v-flex>
-        <v-flex xs6>
-          <div class="container" v-for="response_p in reponses_p" :key="response_p ">
-            <v-btn depressed color="primary" @click.stop="reponse=response_p , submit()">{{response_p}}</v-btn>
+
+        <v-flex xs4 offset-xs4>
+          <div class="score">
+            <p>Temps restant: {{max_temps}}</p>
+            <p>Score obtenu: {{score}}</p>
+          </div>
+          <v-btn class="right" color="success" @click="next_question()" v-bind:disabled="!allow_switch_next">{{this.game.collection.cartes.length == index + 1?'Afficher mon résultat':'Question suivante'}}</v-btn>
+        </v-flex>
+
+        <v-flex xs12>
+          <div class="container container-space-between">
+            <div v-for="(reponse_possible, index) in reponses_p" :key="reponse_possible.id">
+
+              <v-btn v-if="game.collection.evaluation_type == 1" depressed color="primary" @click.stop="submit(index)" v-bind:disabled="reponse_possible.disabled_as_false_answer || reponse_possible.hightlighted_as_correct_answer ||
+              answered">{{reponse_possible.description}}</v-btn>
+
+              <v-card v-else>
+                <img :src="reponse_possible.url_image" width="80px" @click.stop="submit(index)" v-bind:class="{'disabled_image': reponse_possible.disabled_as_false_answer || reponse_possible.hightlighted_as_correct_answer ||
+                answered}" />
+              </v-card>
+
+              <p class="icons">
+                <v-icon v-if="reponse_possible.hightlighted_as_correct_answer" flat icon color="green lighten-1">fas fa-check</v-icon>
+                <v-icon v-if="reponse_possible.disabled_as_false_answer" flat icon color="red lighten-1">fas fa-times</v-icon>
+              </p>
+
+            </div>
           </div>
         </v-flex>
       </v-layout>
+
+      <v-layout v-else>
+        <v-flex xs4 offset-xs4>
+          <h3 class="headline">L'évalutaion est terminée</h3>
+          <p class="subheading">Tes résultats seront affichés dans un instant</p>
+          <v-progress-circular indeterminate color="primary"></v-progress-circular>
+        </v-flex>
+      </v-layout>
+
     </v-container>
 </template>
 
@@ -58,7 +86,7 @@ export default {
     return {
       selected_id: null,
       index: 0,
-      reponse: '',
+      reponse: null,
       reponses:[],
       reponses_p: [],
       question: {},
@@ -67,10 +95,12 @@ export default {
       message: '',
       max_temps: 0,
       dialog: false,
-      alert: false,
       random: 0,
       fliped: false,
-      diferent: []
+      diferent: [],
+      allow_switch_next: false,
+      answered: false,
+      game_finished: false
     }
   },
 
@@ -85,13 +115,22 @@ export default {
   },
 
   created() {
-    let data=[]
+    console.log('Game')
+    console.log(this.game)
+    this.question = this.game.collection.cartes[this.index]
+    this.allowed = this.game.collection.nb_attempts_allowed
 
-    this.question=this.game.collection.cartes[this.index]
-    this.allowed=this.game.collection.nb_attempts_allowed
-
-    data[this.index]={"nb_attempts":0, "is_correct":0, "response_time":0, "carte_id": this.index, "game_id": this.game.id}
-    this.reponses.push(data[this.index])
+    this.reponses.push({
+      nb_attempts: 0,
+      is_correct: 0,
+      response_time: 0,
+      carte: {
+        id: this.question.id
+      },
+      game: {
+        id: this.game.id
+      }
+    })
 
     this.reponse_posibles();
 
@@ -112,43 +151,61 @@ export default {
   },
 
   methods:{
-    is_correct(){
-      if (this.reponse === this.question.description) {
+    is_correct(index){
+      if (this.reponse.id === this.question.id) {
+        this.reponses_p[index].hightlighted_as_correct_answer = true
+        this.answered = true
         this.reponses[this.index].is_correct = 1
         this.score++
-        this.alert=false
-        this.flipCard()
+        this.allow_switch_next = true
+        // this.flipCard()
 
-        this.is_finished()
+        // this.is_finished()
 
       } else {
-        this.alert=true
-        this.show_response()
+        this.reponses_p[index].disabled_as_false_answer = true
         this.oportunity_next()
       }
     },
 
     is_finished(){
-      let data = []
+
+      this.reponses_p = []
       if (this.game.collection.cartes.length==this.index+1) {
-        this.message='Evaluation terminée\n'+'Score:'+this.score
-        this.dialog=true
+
         clearInterval(this.time)
-        this.game.responses=this.reponses
-        store.dispatch('sendScore', this.game, this.game.id)
+        this.game_finished = true
+        this.$store.dispatch('sendScore', this.reponses).then(res => {
+          setTimeout(() => {
+            this.$router.push({name: 'score'})
+          }, 2000)
+        }, err => {
+          console.log(err)
+        })
       } else {
         this.reponses[this.index].nb_attempts = this.game.collection.nb_attempts_allowed-this.allowed
 
         //On passe à la question suivant et initialise les valeurs
-        this.max_temps=this.game.collection.max_response_time
-        this.allowed=this.game.collection.nb_attempts_allowed
-        this.reponses_p.length=0;
+        this.allow_switch_next = false
         this.index++
         this.reponse_posibles();
+        this.max_temps=this.game.collection.max_response_time
+        this.allowed=this.game.collection.nb_attempts_allowed
         this.question=this.game.collection.cartes[this.index]
 
-        data[this.index]={"nb_attempts":0, "is_correct":0, "response_time":0, "carte_id": this.index, "game_id": this.game.id}
-        this.reponses.push(data[this.index])
+        this.reponses.push({
+          nb_attempts: 0,
+          is_correct: 0,
+          response_time: 0,
+          carte: {
+            id: this.question.id
+          },
+          game: {
+            id: this.game.id
+          }
+        })
+
+        this.answered = false
       }
     },
 
@@ -159,20 +216,46 @@ export default {
     },
 
     oportunity_next(){
-      if (this.allowed>1) {
-        this.allowed--
-      }else{
-        this.is_finished()
+
+      if(this.allowed == 0){
+
+        if (this.game.collection.display_correct_answer==1) {
+          this.flipCard()
+          for(let i in this.reponses_p) {
+            if(this.reponses_p[i].id == this.question.id) {
+              this.reponses_p[i].hightlighted_as_correct_answer = true
+            }else{
+              this.reponses_p[i].disabled_as_false_answer = true
+            }
+          }
+        }
+        this.allow_switch_next = true
+        this.answered = true
+
       }
     },
 
-    submit(){
-      this.reponses[this.index].response_time=this.max_temps
-      this.is_correct()
+    submit(index){
+      if(this.reponses_p[index].disabled_as_false_answer == true || 
+        this.reponses_p[index].hightlighted_as_correct_answer ||
+        this.answered == true ||
+        this.allowed == 0){
+        return
+      }
+      this.reponse = this.reponses_p[index]
+      this.reponses[this.index].response_time = this.game.collection.max_response_time - this.max_temps
+      this.allowed --;
+      this.is_correct(index)
     },
 
     getRandomInt(max) {
       return Math.floor(Math.random() * Math.floor(max));
+    },
+
+    next_question() {
+      if(this.allow_switch_next == true) {
+        this.is_finished()
+      }
     },
 
 //     is_diferent(){
@@ -201,20 +284,25 @@ export default {
     //Méthod pour selectioner les possible reponse à l'hasard et le desordener
     reponse_posibles(){
 
-      let temp_cards = this.game.collection.cartes;
+      let temp_cards = this.game.collection.cartes.slice()
 
       for (var i = 1; i < this.game.collection.nb_possible_answers; i++) {
         this.random = this.getRandomInt(temp_cards.length)
-        this.reponses_p.push(temp_cards[this.random].description)
+        if(temp_cards[this.random].id == this.game.collection.cartes[this.index].id){
+          i --;
+          continue
+        }
+        this.reponses_p.push(Object.assign(temp_cards[this.random], {disabled_as_false_answer: false, hightlighted_as_correct_answer: false}))
         temp_cards.splice(this.random, 1)
       }
+      this.reponses_p.push(Object.assign(this.game.collection.cartes[this.index], {disabled_as_false_answer: false, hightlighted_as_correct_answer: false}))
+      this.reponses_p = this.reponses_p.sort(function() {return Math.random() - 0.5})
 
-      this.reponses_p.push(this.game.collection.cartes[this.index].description)
-      this.reponses_p = this.reponses_p.sort(function() {return Math.random() - 0.5});
-      console.log(this.reponses_p);
     },
 
     flipCard() {
+      if (this.game.collection.display_correct_answer == 0)
+        return
       if(this.selected_id != this.question.id) {
         this.fliped = true
         this.selected_id = this.question.id
@@ -318,6 +406,19 @@ margin-bottom: 30px;
 margin-bottom: 50px;
 }
 
+.title-overriden{
+  padding: 5px;
+}
+
+.container-space-between {
+  padding-left: 0;
+  padding-right: 0;
+  justify-content: space-between;
+}
+.disabled_image{
+  -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%);
+}
 
 
 </style>
