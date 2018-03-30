@@ -102,7 +102,9 @@ export default new Vuex.Store({
 
         sendScore({commit, state}, responses) {
             if(state.game != null){
-
+                
+                commit('setResponses', responses)
+                
                 return api.patch(`games/${state.game.id}/score`, {game: state.game}).then(res => {
                     console.log(res)
                     return Promise.resolve('Bien enregistré')
