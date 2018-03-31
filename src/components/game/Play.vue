@@ -13,7 +13,7 @@
         </v-flex>
       </v-layout>
       <v-layout row wrap>
-        <v-flex xs12 sm12 md6 lg3 xl3 v-for="carte in game.collection.cartes" :key="carte.id" class="cartePartie">
+        <v-flex xs12 sm12 md6 lg3 xl3 v-for="carte in collection.cartes" :key="carte.id" class="cartePartie">
           <v-layout>
             <v-flex xs12>
               <v-card>
@@ -161,7 +161,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters({game: 'getGame'})
+    ...mapGetters({game: 'getGame', collection: 'getSelectedCollection'})
   }
 }
 </script>

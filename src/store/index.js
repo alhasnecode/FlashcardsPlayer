@@ -10,7 +10,8 @@ Vue.use(Vuex);
 const initialState = {
     game: null,
     score: null,
-    collections: []
+    collections: [],
+    selected_collection: null
 };
 
 export default new Vuex.Store({
@@ -39,6 +40,9 @@ export default new Vuex.Store({
 
         setResponses(state, responses_array) {
             state.game.responses = responses_array
+        },
+        setSelectedCollection(state, c) {
+            state.selected_collection = c
         }
     },
     getters: {
@@ -56,11 +60,15 @@ export default new Vuex.Store({
 
         isFinished: (state) => {
             return state.game.is_finished
+        },
+
+        getSelectedCollection: (state) => {
+            return state.selected_collection
         }
     },
     actions: {
 
-        createGame({ commit }, game) {
+        createGame({ commit, state }, game) {
             let request_body = {
                 collection: {
                     id: game.collection.id
@@ -69,6 +77,9 @@ export default new Vuex.Store({
             }
             return api.post('games', request_body).then((res) => {
                 commit('setGame', res.data)
+                commit('setSelectedCollection', state.collections.find(c => {return c.id == game.collection.id}))
+                console.log('Selected collection')
+                console.log(state.selected_collection)
                 return Promise.resolve(res)
             }).catch((err) => {
                 return Promise.reject(err)
