@@ -36,11 +36,11 @@
                     </v-alert>
                 </v-card-title>
                 <v-card-text>
-                    <form>
+                    <form @submit.prevent>
                         <v-text-field label="Saisir ici votre pseudo avant de commencer" v-model="game.pseudo" required></v-text-field>
                         <!--<v-select :items="choix" label="Nombre de photos" item-value="text" v-model="nbImages" required></v-select>-->
-                        <v-btn @click="createGame">Commencer</v-btn>
-                        <v-btn @click="clear">Annuler</v-btn>
+                        <v-btn @click.stop="createGame">Commencer</v-btn>
+                        <v-btn @click.stop="clear">Annuler</v-btn>
                     </form>
                 </v-card-text>
             </v-card>
