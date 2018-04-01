@@ -77,30 +77,63 @@
     <router-link to="/" flat color="dark grey"  class="btn">Nouvelle partie</router-link>-->
 
     <v-layout>
+      
       <v-flex xs4 offset-xs4>
-        <h3 class="headline">Tableau des scores</h3>
+        
+        <h3 class="headline">{{pseudo}}, voici le résulat de ton évalution : </h3>
       </v-flex>
+
     </v-layout>
+          <table class="table">
+        <tr> 
+          <td>
+            ID de la carte 
+            </td>
+          <td>
+            Nombre de tentative
+          </td>
+          <td>Temps
+          </td>
+          <td>
+            Réponse
+            </td>
+        </tr>
+      <score-element v-for="unScore in scores" :unScore="unScore"/>
+
+      </table>
+
+      <router-link :to="{ path: '*'}" append><v-btn class="right" color="success" >Retour à l'accueil</v-btn>
+      </router-link>
 
   </v-container>
 
 </template>
 
 <script>
-
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+import ScoreElement from "./ScoreElement.vue"
 import{mapGetters} from 'vuex'
+import store from '@/store'
+import Vue from 'vue'
 
 export default {
   name: 'Score',
+  components: {ScoreElement},
   data () {
     return {
-      
+      scores: [],
+      pseudo:''   
     }
   },
   methods: {
 
   },
   created(){
+    this.scores = store.state.game.responses ;
+    this.pseudo = store.state.game.pseudo;
+
        
   },
 }
@@ -108,6 +141,7 @@ export default {
 
 
 <style scoped>
+
 .btn {
   margin-top : 50px;
   padding :0 15px;
@@ -121,5 +155,6 @@ export default {
 }
 h3{
   text-align:center;
+  margin-top: 2em;
 }
 </style>
