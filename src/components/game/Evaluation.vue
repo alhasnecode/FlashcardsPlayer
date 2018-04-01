@@ -4,8 +4,9 @@
     <v-layout v-if="!game_finished" row wrap>
         <v-flex xs4>
           <v-card>
-            <v-card-media height="310px">
+            <v-card-media height="310px" @click.stop="flipCard()">
               <div class="flipper" v-bind:class="{'flip': selected_id == question.id && fliped}" :key="question.id">
+              <!--<div class="flipper" :key="question.id">-->
                 <div v-if="game.collection.evaluation_type == 1" class="front">
                   <img class="front image" :src="question.url_image">
                 </div>
@@ -32,9 +33,16 @@
           </v-card>
         </v-flex>
 
-        <v-flex xs4 offset-xs4>
+        <v-flex xs4>
+          <h2 class="display-1 grey--text">Question {{index + 1}} / {{game.collection.cartes.length}}</h2>
+          <v-icon v-if="answered_correct" flat icon color="green lighten-1">fas fa-check</v-icon>
+          <v-icon v-if="answered_false" flat icon color="red lighten-1">fas fa-times</v-icon>
+        </v-flex>
+
+        <v-flex xs4>
           <div class="score">
-            <p>Temps restant: {{max_temps}}</p>
+            <p>Temps restant: {{max_temps}}s</p>
+            <p v-if="!answered_correct">Tentatives restants: {{allowed}}</p>
             <p>Score obtenu: {{score}}</p>
           </div>
           <v-btn class="right" color="success" @click="next_question()" v-bind:disabled="!allow_switch_next">{{this.game.collection.cartes.length == index + 1?'Afficher mon résultat':'Question suivante'}}</v-btn>
@@ -44,12 +52,12 @@
           <div class="container container-space-between">
             <div v-for="(reponse_possible, index) in reponses_p" :key="reponse_possible.id">
 
-              <v-btn v-if="game.collection.evaluation_type == 1" depressed color="primary" @click.stop="submit(index)" v-bind:disabled="reponse_possible.disabled_as_false_answer || reponse_possible.hightlighted_as_correct_answer ||
-              answered">{{reponse_possible.description}}</v-btn>
+              <v-btn v-if="game.collection.evaluation_type == 1" depressed color="primary" @click.stop="submit(index)" v-bind:disabled="reponse_possible.disabled_as_false_answer ||
+                (answered && !reponse_possible.hightlighted_as_correct_answer)">{{reponse_possible.description}}</v-btn>
 
               <v-card v-else>
-                <img :src="reponse_possible.url_image" width="80px" @click.stop="submit(index)" v-bind:class="{'disabled_image': reponse_possible.disabled_as_false_answer || reponse_possible.hightlighted_as_correct_answer ||
-                answered}" />
+                <img :src="reponse_possible.url_image" width="80px" @click.stop="submit(index)" v-bind:class="{'disabled_image': reponse_possible.disabled_as_false_answer ||
+                (answered && !reponse_possible.hightlighted_as_correct_answer)}" />
               </v-card>
 
               <p class="icons">
@@ -100,6 +108,8 @@ export default {
       diferent: [],
       allow_switch_next: false,
       answered: false,
+      answered_correct: false,
+      answered_false: false,
       game_finished: false
     }
   },
@@ -115,8 +125,6 @@ export default {
   },
 
   created() {
-    console.log('Game')
-    console.log(this.game)
     this.question = this.game.collection.cartes[this.index]
     this.allowed = this.game.collection.nb_attempts_allowed
 
@@ -132,7 +140,7 @@ export default {
       }
     })
 
-    this.reponse_posibles();
+    this.reponse_possibles();
 
     if(this.game.collection.max_response_time>0){
 
@@ -154,13 +162,20 @@ export default {
     is_correct(index){
       if (this.reponse.id === this.question.id) {
         this.reponses_p[index].hightlighted_as_correct_answer = true
+
+        for(let i in this.reponses_p) {
+          if(this.reponses_p[i].id == this.question.id) {
+            this.reponses_p[i].hightlighted_as_correct_answer = true
+          }else{
+            this.reponses_p[i].disabled_as_false_answer = true
+          }
+        }
+
         this.answered = true
+        this.answered_correct = true
         this.reponses[this.index].is_correct = 1
         this.score++
         this.allow_switch_next = true
-        // this.flipCard()
-
-        // this.is_finished()
 
       } else {
         this.reponses_p[index].disabled_as_false_answer = true
@@ -178,7 +193,7 @@ export default {
         this.$store.dispatch('sendScore', this.reponses).then(res => {
           setTimeout(() => {
             this.$router.push({name: 'score'})
-          }, 2000)
+          }, 3000)
         }, err => {
           console.log(err)
         })
@@ -187,8 +202,11 @@ export default {
 
         //On passe à la question suivant et initialise les valeurs
         this.allow_switch_next = false
+        this.answered = false
+        this.answered_correct = false
+        this.answered_false = false
         this.index++
-        this.reponse_posibles();
+        this.reponse_possibles();
         this.max_temps=this.game.collection.max_response_time
         this.allowed=this.game.collection.nb_attempts_allowed
         this.question=this.game.collection.cartes[this.index]
@@ -204,14 +222,6 @@ export default {
             id: this.game.id
           }
         })
-
-        this.answered = false
-      }
-    },
-
-    show_response(){
-      if (this.game.collection.display_correct_answer==1) {
-        this.flipCard()
       }
     },
 
@@ -220,7 +230,7 @@ export default {
       if(this.allowed == 0){
 
         if (this.game.collection.display_correct_answer==1) {
-          this.flipCard()
+          //this.flipCard()
           for(let i in this.reponses_p) {
             if(this.reponses_p[i].id == this.question.id) {
               this.reponses_p[i].hightlighted_as_correct_answer = true
@@ -230,6 +240,7 @@ export default {
           }
         }
         this.allow_switch_next = true
+        this.answered_false = true
         this.answered = true
 
       }
@@ -282,7 +293,7 @@ export default {
 //     },
 
     //Méthod pour selectioner les possible reponse à l'hasard et le desordener
-    reponse_posibles(){
+    reponse_possibles(){
 
       let temp_cards = this.game.collection.cartes.slice()
 
@@ -301,13 +312,15 @@ export default {
     },
 
     flipCard() {
-      if (this.game.collection.display_correct_answer == 0)
-        return
-      if(this.selected_id != this.question.id) {
-        this.fliped = true
-        this.selected_id = this.question.id
-      }else{
-        this.fliped = !this.fliped
+      if((this.game.collection.display_correct_answer && this.answered) || this.answered_correct){
+        if (this.game.collection.display_correct_answer == 0)
+          return
+        if(this.selected_id != this.question.id) {
+          this.fliped = true
+          this.selected_id = this.question.id
+        }else{
+          this.fliped = !this.fliped
+        }
       }
     }
   },
