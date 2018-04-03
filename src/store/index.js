@@ -119,7 +119,7 @@ export default new Vuex.Store({
                 commit('setResponses', responses)
                 
                 return api.patch(`games/${state.game.id}/score`, {game: state.game}).then(res => {
-                    console.log(res)
+                    commit('setGame', res.data)
                     return Promise.resolve('Bien enregistré')
                 }).catch(e => {
                     return Promise.reject(e)
