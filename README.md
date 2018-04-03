@@ -12,10 +12,10 @@ Application réalisée dans le cadre du projet tutoré, LP CISIIE
 
 ## Pré-requis
 
-- Docker compose
+- npm ([Télécharger](https://www.npmjs.com/get-npm))
 - L'API [Flashcards](https://github.com/Kojuri/flashcards) bien configuré
 
 ## Installation
 
 - Installer les dépendances du projet `$ npm install`
-- Démarrer l'application en mode dev `$ run dev`
+- Démarrer l'application en mode dev `$ npm run dev`
