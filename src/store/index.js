@@ -75,6 +75,8 @@ export default new Vuex.Store({
                 },
                 pseudo: game.pseudo
             }
+            console.log('Game')
+            console.log(game)
             return api.post('games', request_body).then((res) => {
                 commit('setGame', res.data)
                 commit('setSelectedCollection', state.collections.find(c => {return c.id == game.collection.id}))
