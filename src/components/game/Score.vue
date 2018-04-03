@@ -87,10 +87,10 @@
           <table class="table">
         <tr> 
           <td>
-            ID de la carte 
+            Carte 
             </td>
           <td>
-            Nombre de tentative
+            Nombres de tentatives
           </td>
           <td>Temps
           </td>
@@ -99,8 +99,15 @@
             </td>
         </tr>
       <score-element v-for="unScore in scores" :unScore="unScore"/>
+      <tr>
+        <td><td>
+        <td> <b> Score Final : </b></td>
+        <td><b>{{score}}</b></td>
+      </tr>
+      
 
       </table>
+      
 
       <router-link :to="{ path: '*'}" append><v-btn class="right" color="success" >Retour à l'accueil</v-btn>
       </router-link>
@@ -124,7 +131,8 @@ export default {
   data () {
     return {
       scores: [],
-      pseudo:''   
+      pseudo:'' ,
+      score: null  
     }
   },
   methods: {
@@ -133,9 +141,14 @@ export default {
   created(){
     this.scores = store.state.game.responses ;
     this.pseudo = store.state.game.pseudo;
+    this.score = store.state.game.score;
 
        
   },
+
+  computed: {
+    ...mapGetters({game: 'getGame'})
+  }
 }
 </script>
 

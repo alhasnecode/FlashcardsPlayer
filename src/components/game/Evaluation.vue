@@ -73,7 +73,7 @@
       <v-layout v-else>
         <v-flex xs4 offset-xs4>
           <h3 class="headline">L'évalutaion est terminée</h3>
-          <p class="subheading">Tes résultats seront affichés dans un instant</p>
+          <p class="subheading">Les résultats seront affichés dans un instant</p>
           <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </v-flex>
       </v-layout>
