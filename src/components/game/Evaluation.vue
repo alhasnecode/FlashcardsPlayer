@@ -185,9 +185,10 @@ export default {
 
     is_finished(){
 
+      this.reponses[this.index].nb_attempts = this.game.collection.nb_attempts_allowed-this.allowed
+
       this.reponses_p = []
       if (this.game.collection.cartes.length==this.index+1) {
-
         clearInterval(this.time)
         this.game_finished = true
         this.$store.dispatch('sendScore', this.reponses).then(res => {
@@ -198,7 +199,6 @@ export default {
           console.log(err)
         })
       } else {
-        this.reponses[this.index].nb_attempts = this.game.collection.nb_attempts_allowed-this.allowed
 
         //On passe à la question suivant et initialise les valeurs
         this.allow_switch_next = false

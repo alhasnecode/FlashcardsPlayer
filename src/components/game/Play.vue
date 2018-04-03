@@ -78,6 +78,8 @@ export default {
 
   created() {
 
+    console.log('created')
+    console.log(this.collection)
     this.learning_countdown.max_learning_time_required = this.game.collection.max_learning_time_required
     this.learning_countdown.min_learning_time_required = this.game.collection.min_learning_time_required
 
