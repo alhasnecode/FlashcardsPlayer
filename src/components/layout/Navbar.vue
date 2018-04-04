@@ -2,7 +2,7 @@
     <v-toolbar fixed app color="gray" class="navbar">
         <v-toolbar-title>
           <h1>
-            <router-link to="/creationpartie">
+            <router-link to="/create_partie">
               <v-icon>fa-gamepad</v-icon>
               Flashcards
             </router-link>
