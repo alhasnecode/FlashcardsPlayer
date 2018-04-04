@@ -25,6 +25,7 @@
                       </div>
                       <div class="back">
                         <p class="response-text title">{{carte.description}}</p>
+                        <a @click="speech(carte.description)"><i class="material-icons">volume_up</i></a>
                       </div>
                     </div>
                 </v-card-media>
@@ -41,7 +42,7 @@
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import store from '@/store'
-
+import Artyom from 'artyom.js';
 export default {
 
   name: 'PlayGame',
@@ -75,6 +76,7 @@ export default {
   },
 
   created() {
+    
 
     console.log('created')
     console.log(this.collection)
@@ -142,6 +144,14 @@ export default {
   },
 
   methods:{
+
+    speech(nom) {
+      const Jarvis = new Artyom();
+
+      Jarvis.say(nom, {
+            lang:"fr-FR"
+        });
+    },
 
       flipCard(carte) {
         if(this.selected_id != carte.id) {

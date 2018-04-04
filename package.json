@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "artyom.js": "^1.0.6",
     "axios": "^0.17.1",
     "bootstrap-vue": "^2.0.0-rc.4",
     "font-awesome": "^4.7.0",
