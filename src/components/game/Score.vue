@@ -80,7 +80,7 @@
       
       <v-flex xs4 offset-xs4>
         
-        <h3 class="headline">{{pseudo}}, voici le résulat de ton évalution : </h3>
+        <h3 class="headline">{{pseudo}}, voici le résulat de ton évaluation : </h3>
       </v-flex>
 
     </v-layout>
