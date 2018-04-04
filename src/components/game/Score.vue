@@ -102,7 +102,7 @@
       <tr>
         <td><td>
         <td> <b> Score Final : </b></td>
-        <td><b>{{score}}</b></td>
+        <td><b>{{score}} / {{scores.length}}</b></td>
       </tr>
       
 
@@ -142,6 +142,7 @@ export default {
     this.scores = store.state.game.responses ;
     this.pseudo = store.state.game.pseudo;
     this.score = store.state.game.score;
+  
 
        
   },
