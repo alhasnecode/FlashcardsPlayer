@@ -15,7 +15,7 @@
         </v-flex>
       </v-layout>
 
-      <v-layout row wrap>
+      <v-layout row wrap justify-center>
             <v-flex xs7 sm5 md3 lg2 xl2 v-for="carte in collection.cartes" :key="carte.id" class="cartePartie">
               <v-card>
                 <v-card-media height="200px" @click.stop="flipCard(carte)" id="collection">
@@ -76,7 +76,7 @@ export default {
   },
 
   created() {
-    
+
 
     console.log('created')
     console.log(this.collection)
