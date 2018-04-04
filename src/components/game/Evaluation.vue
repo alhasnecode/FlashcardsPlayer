@@ -269,28 +269,24 @@ export default {
       }
     },
 
-//     is_diferent(){
-//       var arr = []; // Arreglo para llenar
-//       var cantidadNumeros = 5; // Cantidad de números en el arreglo
-//       var hasta = 10; // Máximo valor de los números en el arreglo
-//
-//       function llenarAleatorios(a){
-//           var v = Math.floor(Math.random() * hasta);
-//           if(!a.some(function(e){return e == v})){
-//               /**
-//                * Si no se encuentra el valor aleatorio en el arreglo
-//                * se pushea el valor.
-//                */
-//               a.push(v);
-//             }
-//           }
-// /**
-//  * Bucle para llenar el arreglo con la cantidad que necesites
-//  */
-//         while(arr.length < cantidadNumeros && cantidadNumeros < hasta){
-//             llenarAleatorios(arr);
-//         }
-//     },
+    shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+    },
 
     //Méthod pour selectioner les possible reponse à l'hasard et le desordener
     reponse_possibles(){
@@ -307,7 +303,7 @@ export default {
         temp_cards.splice(this.random, 1)
       }
       this.reponses_p.push(Object.assign(this.game.collection.cartes[this.index], {disabled_as_false_answer: false, hightlighted_as_correct_answer: false}))
-      this.reponses_p = this.reponses_p.sort(function() {return Math.random() - 0.5})
+      this.reponses_p = this.shuffle(this.reponses_p)
 
     },
 

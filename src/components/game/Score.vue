@@ -90,7 +90,7 @@
             Carte 
             </td>
           <td>
-            Nombres de tentatives
+            Nombre de tentative(s)
           </td>
           <td>Temps
           </td>
