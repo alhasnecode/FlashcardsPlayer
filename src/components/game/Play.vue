@@ -4,12 +4,14 @@
       <v-layout row wrap class="header">
         <v-flex xs12>
           <h1 class="display-1 left">Apprentissage</h1>
-          <p v-if="learning_countdown.max_learning_time_required" class="display-1">Temps restant avant le test:
+          <v-btn class="right" color="success" @click="startEval()" v-bind:disabled="!allow_start">Démarrer l'évaluation</v-btn>
+        </v-flex>
+        <v-flex xs12>
+          <p v-if="learning_countdown.max_learning_time_required" class="subheading right">Temps restant avant le test:
             <span>{{learning_countdown.hours}}</span>:
             <span>{{learning_countdown.minutes}}</span>:
             <span>{{learning_countdown.seconds}}</span>
           </p>
-          <v-btn class="right" color="success" @click="startEval()" v-bind:disabled="!allow_start">Démarrer l'évaluation</v-btn>
         </v-flex>
       </v-layout>
       <v-layout row wrap>
