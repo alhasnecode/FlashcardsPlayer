@@ -4,23 +4,21 @@
       <v-layout row wrap class="header">
         <v-flex xs12>
           <h1 class="display-1 left">Apprentissage</h1>
-          <v-btn class="right" color="success" @click="startEval()" v-bind:disabled="!allow_start">Démarrer l'évaluation</v-btn>
+          <v-btn class="right" color="success" @click="startEval()" v-bind:disabled="!allow_start">Démarrer l'évaluation maintenant</v-btn>
         </v-flex>
         <v-flex xs12>
-          <p v-if="learning_countdown.max_learning_time_required" class="subheading right">Temps restant avant le test:
+          <p v-if="learning_countdown.max_learning_time_required" class="subheading right">Temps restant avant l'évaluation:
             <span>{{learning_countdown.hours}}</span>:
             <span>{{learning_countdown.minutes}}</span>:
             <span>{{learning_countdown.seconds}}</span>
           </p>
         </v-flex>
       </v-layout>
-      <v-layout row wrap>
-        <v-flex xs12 sm12 md6 lg3 xl3 v-for="carte in collection.cartes" :key="carte.id" class="cartePartie">
-          <v-layout>
-            <v-flex xs12>
-              <v-card>
 
-                <v-card-media height="300px" @click.stop="flipCard(carte)" id="collection">
+      <v-layout row wrap>
+            <v-flex xs7 sm5 md3 lg2 xl2 v-for="carte in collection.cartes" :key="carte.id" class="cartePartie">
+              <v-card>
+                <v-card-media height="200px" @click.stop="flipCard(carte)" id="collection">
                     <div class="flipper" v-bind:class="{'flip': selected_id == carte.id && fliped}">
                       <div class="front">
                         <img class="front" :src="carte.url_image">
@@ -30,12 +28,10 @@
                       </div>
                     </div>
                 </v-card-media>
-
               </v-card>
             </v-flex>
-          </v-layout>
-        </v-flex>
       </v-layout>
+
     </v-container>
   </section>
 </template>
